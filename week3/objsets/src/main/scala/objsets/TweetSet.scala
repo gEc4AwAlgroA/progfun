@@ -81,7 +81,7 @@ abstract class TweetSet {
     def descendingByRetweet: TweetList =
     if (this.isEmpty) Nil
     else new Cons(this.mostRetweeted, (this remove this.mostRetweeted).descendingByRetweet)
-  
+
   /**
    * The following methods are already implemented
    */
@@ -125,7 +125,7 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     def isEmpty = false
-    def union (that: TweetSet) = left union (right union that incl elem)
+    def union (that: TweetSet) = {print("a");left union (right union that).incl(elem)}
     def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet =
       if (p(elem)) left.filterAcc(p, acc) union right.filterAcc(p, acc) incl elem
       else left.filterAcc(p, acc) union right.filterAcc(p, acc)
@@ -181,20 +181,12 @@ object GoogleVsApple {
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
   lazy val googleTweets: TweetSet = {
-    TweetReader.allTweets.filter(tw => tw.text.contains(google(0))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(google(1))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(google(2))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(google(3))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(google(4))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(google(5)))
+    TweetReader.allTweets.filter(tw => tw.text.contains(google(0)) || tw.text.contains(google(1))
+      || tw.text.contains(google(2)) || tw.text.contains(google(3)) || tw.text.contains(google(4)) || tw.text.contains(google(5)))
   }
   lazy val appleTweets: TweetSet = {
-    TweetReader.allTweets.filter(tw => tw.text.contains(apple(0))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(apple(1))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(apple(2))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(apple(3))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(apple(4))) union
-      TweetReader.allTweets.filter(tw => tw.text.contains(apple(5)))
+    TweetReader.allTweets.filter(tw => tw.text.contains(apple(0)) || tw.text.contains(apple(1))
+      || tw.text.contains(apple(2)) || tw.text.contains(apple(3)) || tw.text.contains(apple(4)) || tw.text.contains(apple(5)))
   }
   
   /**
