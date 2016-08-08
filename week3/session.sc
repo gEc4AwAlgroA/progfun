@@ -32,3 +32,26 @@ val t4 = new NonEmpty(4, Empty, Empty)
 val ta = t1 union t2
 val tb = ta union t3
 val tc = tb union t4
+
+
+trait List[T] {
+  def isEmpty: Boolean
+  def head: T
+  def tail: List[T]
+  def nth(n: Int): T = {
+    if (this.isEmpty) throw new IndexOutOfBoundsException
+    else if (n == 0) head
+    else tail.nth(n - 1)
+  }
+}
+class Cons[T](val head: T, val tail:List[T]) extends List[T] {
+  def isEmpty = false
+}
+class Nil[T] extends List[T] {
+  def isEmpty = true
+  def head = throw new NoSuchElementException("Nil.head")
+  def tail = throw new NoSuchElementException("Nil.tail")
+}
+
+val list = new Cons(1, new Cons(2, new Cons(3, new Cons(4, new Nil))))
+list nth(3)
