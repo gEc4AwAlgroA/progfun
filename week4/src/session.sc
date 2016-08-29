@@ -41,34 +41,34 @@ class Succ(n:Nat) extends Nat {
   def -(that:Nat) = if (that.isZero) this else n - that.predecessor
 }
 
-trait List[T] {
-  def isEmpty: Boolean
-  def head: T
-  def tail: List[T]
-  def nth(n: Int): T = {
-    if (this.isEmpty) throw new IndexOutOfBoundsException
-    else if (n == 0) head
-    else tail.nth(n - 1)
-  }
-}
-class Cons[T](val head: T, val tail:List[T]) extends List[T] {
-  def isEmpty = false
-}
-class Nil[T] extends List[T] {
-  def isEmpty = true
-  def head = throw new NoSuchElementException("Nil.head")
-  def tail = throw new NoSuchElementException("Nil.tail")
-}
-
-object List {
-  def apply[T](): List[T] = new Nil
-  def apply[T](x1: T): List[T] = new Cons(x1, new Nil)
-  def apply[T](x1: T, x2: T): List[T] = new Cons(x1, new Cons(x2, new Nil))
-}
-
-List()
-List(4)
-List(8,9)
+//trait List[T] {
+//  def isEmpty: Boolean
+//  def head: T
+//  def tail: List[T]
+//  def nth(n: Int): T = {
+//    if (this.isEmpty) throw new IndexOutOfBoundsException
+//    else if (n == 0) head
+//    else tail.nth(n - 1)
+//  }
+//}
+//class Cons[T](val head: T, val tail:List[T]) extends List[T] {
+//  def isEmpty = false
+//}
+//class Nil[T] extends List[T] {
+//  def isEmpty = true
+//  def head = throw new NoSuchElementException("Nil.head")
+//  def tail = throw new NoSuchElementException("Nil.tail")
+//}
+//
+//object List {
+//  def apply[T](): List[T] = new Nil
+//  def apply[T](x1: T): List[T] = new Cons(x1, new Nil)
+//  def apply[T](x1: T, x2: T): List[T] = new Cons(x1, new Cons(x2, new Nil))
+//}
+//
+//List()
+//List(4)
+//List(8,9)
 
 //from week3
 abstract class IntSet {
@@ -130,3 +130,17 @@ show(Prod(Number(2),Number(4)))
 
 show(Sum(Prod(Number(2), Var("a")), Var("b")))
 show(Prod(Sum(Number(2), Var("c")), Var("d")))
+
+//Lists
+
+def isort(xs: List[Int]): List[Int] = xs match {
+  case List() => List()
+  case y :: ys => insert(y, isort(ys))
+}
+
+def insert(x: Int, xs: List[Int]): List[Int] = xs match {
+  case List() => List(x)
+  case y :: ys => if (x <= y) x::xs else y :: insert(x, ys)
+}
+
+isort(List(1,3,5,4,2))
