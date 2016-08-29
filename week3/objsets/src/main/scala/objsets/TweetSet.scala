@@ -129,10 +129,14 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet =
       if (p(elem)) left.filterAcc(p, acc) union right.filterAcc(p, acc) incl elem
       else left.filterAcc(p, acc) union right.filterAcc(p, acc)
-    def mostRetweeted: Tweet =
-      if (!left.isEmpty && (left.mostRetweeted.retweets > elem.retweets && (right.isEmpty || left.mostRetweeted.retweets > right.mostRetweeted.retweets))) left.mostRetweeted
-      else if (!right.isEmpty && (right.mostRetweeted.retweets > elem.retweets && (left.isEmpty || right.mostRetweeted.retweets > left.mostRetweeted.retweets))) right.mostRetweeted
-      else elem
+    def mostRetweeted: Tweet = {
+      var mrt = elem
+      foreach((t:Tweet) => if (t.retweets > mrt.retweets) mrt = t)
+      mrt
+    }
+//      if (!left.isEmpty && (left.mostRetweeted.retweets > elem.retweets && (right.isEmpty || left.mostRetweeted.retweets > right.mostRetweeted.retweets))) left.mostRetweeted
+//      else if (!right.isEmpty && (right.mostRetweeted.retweets > elem.retweets && (left.isEmpty || right.mostRetweeted.retweets > left.mostRetweeted.retweets))) right.mostRetweeted
+//      else elem
 
   /* The following methods are already implemented */
   def contains(x: Tweet): Boolean =
