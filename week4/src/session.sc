@@ -98,7 +98,35 @@ class NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
   override def toString = "{" + left + elem + right + "}"
 }
 
-val a: Array[NonEmpty] = Array(new NonEmpty(1, Empty, Empty))
-val b: Array[IntSet] = a
-b(0) = Empty
-val s: NonEmpty = a(0)
+//val a: Array[NonEmpty] = Array(new NonEmpty(1, Empty, Empty))
+//val b: Array[IntSet] = a
+//b(0) = Empty
+//val s: NonEmpty = a(0)
+
+//Pattern Matching
+
+trait Expr
+case class Number(n: Int) extends Expr
+case class Sum(e1:Expr, e2:Expr) extends Expr
+case class Prod(e1:Expr, e2:Expr) extends Expr
+case class Var(str: String) extends Expr
+
+def show (e:Expr): String = e match {
+  case Number(x) => x.toString
+  case Var(s) => s
+  case Sum(x, y) => show(x) + " + " + show(y)
+  case Prod(Number(x), Number(y)) => "x * y"
+  case Prod(Number(x), Var(y)) => "x * " + show(Var(y))
+  case Prod(Var(x), Var(y)) => show(Var(x)) + " * " + show(Var(y))
+  case Prod(Var(x), Number(y)) => "x * y"
+  case Prod(Sum(x,y), z) => "( " + show(Sum(x, y)) + " ) * " + show(z)
+  case Prod(x, Sum(y,z)) => show(x) + " * ( " + show(Sum(y, z)) + ")"
+  //I presume there's a much better way!
+}
+
+show(Var("d"))
+show(Sum(Number(1), Number(13)))
+show(Prod(Number(2),Number(4)))
+
+show(Sum(Prod(Number(2), Var("a")), Var("b")))
+show(Prod(Sum(Number(2), Var("c")), Var("d")))
