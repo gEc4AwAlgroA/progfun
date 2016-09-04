@@ -2,6 +2,8 @@ package patmat
 
 import common._
 
+import scala.collection.immutable.Stream.Empty
+
 /**
  * Assignment 4: Huffman coding
  *
@@ -94,12 +96,18 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs match {
+      case Nil => List()
+      case head :: Nil => List(Leaf(head._1, head._2))
+      case head :: tail =>
+        if (head._2 > tail.head._2) Leaf(tail.head._1, tail.head._2) :: makeOrderedLeafList(head :: tail.tail)
+        else Leaf(head._1, head._2) :: makeOrderedLeafList(tail)
+    }
   
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-    def singleton(trees: List[CodeTree]): Boolean = ???
+    def singleton(trees: List[CodeTree]): Boolean = trees.size == 1
   
   /**
    * The parameter `trees` of this function is a list of code trees ordered
