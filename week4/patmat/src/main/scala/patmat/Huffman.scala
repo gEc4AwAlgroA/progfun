@@ -75,7 +75,17 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] = {
+      def addOrInsert(x: Char, acc: List[(Char, Int)]): List[(Char, Int)] = acc match {
+        case Nil => (x, 1) :: acc
+        case head :: tail => if (head._1 == x) (head._1, head._2 + 1) :: tail else head :: addOrInsert(x, tail)
+      }
+      def timesAcc(chars:List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = chars match {
+        case Nil => acc
+        case x :: rest => timesAcc(rest, addOrInsert(x, acc))
+        }
+      timesAcc(chars, List())
+    }
   
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
