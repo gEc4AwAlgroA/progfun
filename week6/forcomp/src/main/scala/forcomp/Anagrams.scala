@@ -84,7 +84,15 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+
+  //http://stackoverflow.com/questions/24150494/list-of-all-combinations
+  //struggled to get the iteration combinations correctly ordered
+  def combinations(occurrences: Occurrences): List[Occurrences] = occurrences match {
+    case Nil => List(List())
+    case (c, n) :: tail =>
+      val rest = combinations(tail)
+      (for {k <- rest; j <- 1 to n} yield (c, j) :: k) ::: rest
+  }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
@@ -96,7 +104,13 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+
+  //http://scala4fun.tumblr.com/post/84792374567/mergemaps
+  //still don't get the reduceLeft
+  def subtract(x: Occurrences, y: Occurrences): Occurrences =
+  (List(x.toMap, y.toMap).reduceLeft ((r, m) => m.foldLeft(r) {
+    case (dict, (k, v)) => dict + (k -> (dict.getOrElse(k, 0)-v))
+  }) toList ) filter {case(c,i) => i>0} sortBy (_._1)
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -138,5 +152,19 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence)= {
+    val orig = sentenceOccurrences(sentence)
+    def sentenceInt(socc:Occurrences):List[Word] = {
+      //    println(socc)
+      val blah = combinations(socc)
+      val finds = dictionaryByOccurrences filterKeys blah.toSet
+      //    println(finds)
+      finds.toList match {
+        case Nil => List()
+        case (occ, wd) :: tail => wd ::: sentenceInt(subtract(socc, occ))
+        //      case (occ, wd) :: tail => {println(occ, subtract(socc, occ), tail); wd ::: sentenceInt(subtract(socc, occ)) }
+      }
+    }
+    sentenceInt(orig)
+  }
 }
