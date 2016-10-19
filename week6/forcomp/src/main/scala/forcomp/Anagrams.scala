@@ -152,19 +152,19 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
+  //http://shirleyisnotageek.blogspot.co.uk/2015/10/scala-note-5-sentence-anagrams.html
   def sentenceAnagrams(sentence: Sentence)= {
-    val orig = sentenceOccurrences(sentence)
-    def sentenceInt(socc:Occurrences):List[Word] = {
-      //    println(socc)
-      val blah = combinations(socc)
-      val finds = dictionaryByOccurrences filterKeys blah.toSet
-      //    println(finds)
-      finds.toList match {
-        case Nil => List()
-        case (occ, wd) :: tail => wd ::: sentenceInt(subtract(socc, occ))
-        //      case (occ, wd) :: tail => {println(occ, subtract(socc, occ), tail); wd ::: sentenceInt(subtract(socc, occ)) }
+    def sentenceInt(socc:Occurrences):List[Sentence] = socc match {
+      case Nil => List(Nil)
+      case socc => {
+        val combs = combinations(socc)
+        for {
+          i <- combs if dictionaryByOccurrences.keySet(i)
+          find <- dictionaryByOccurrences(i)
+          rest <- sentenceInt(subtract(socc, i))
+        } yield (find :: rest)
       }
     }
-    sentenceInt(orig)
+    sentenceInt(sentenceOccurrences(sentence))
   }
 }
